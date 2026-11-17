@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3E IPEDS Insights</title>
+  <script>
+    (function () {
+      try {
+        if (localStorage.getItem('3e-dashboard-theme') === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) { /* ignore */ }
+    })();
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="app.css?v=0.4.67">
+  <style>
+    /* Critical loader motion (Domo cache / reduced CSS animation fallbacks). */
+    html.boot-loading #loading-overlay {
+      display: flex !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+    .loader-chart-skel-body { height: 88px; background: #F6F4EE; border: 1px solid #E8E6E0; }
+    html[data-theme="dark"] .loader-chart-skel-body { background: transparent; border-color: transparent; }
+  </style>
+  <script>document.documentElement.classList.add('boot-loading');</script>
+</head>
+<body>
+
+<!-- Loading overlay is a sibling of #app (NOT a child): #app.is-loading sets opacity:0, which would
+     otherwise hide this animated overlay along with the dashboard during the data fetch. -->
+<div id="loading-overlay" aria-live="polite" aria-busy="true">
+  <div class="loader-center">
+    <article class="loader-card">
+      <div class="loader-card-head">
+        <span class="loader-accent" aria-hidden="true"></span>
+        <div class="loader-card-titles">
+          <h2 class="loader-title">3E IPEDS Insights</h2>
+          <p class="loader-tagline">Admissions &amp; Advancement</p>
+        </div>
+      </div>
+      <div class="loader-preview" aria-hidden="true">
+        <div class="loader-kpi-row">
+          <div class="loader-kpi-skel"></div>
+          <div class="loader-kpi-skel"></div>
+          <div class="loader-kpi-skel loader-kpi-skel--tall"></div>
+          <div class="loader-kpi-skel"></div>
+          <div class="loader-kpi-skel"></div>
+        </div>
+        <div class="loader-chart-skel">
+          <div class="loader-chart-skel-head">
+            <span class="loader-chart-skel-accent"></span>
+            <span class="loader-chart-skel-line loader-chart-skel-line--title"></span>
+            <span class="loader-chart-skel-line loader-chart-skel-line--sub"></span>
+          </div>
+          <div class="loader-chart-skel-body"></div>
+        </div>
+      </div>
+      <div class="loader-progress-wrap">
+        <div class="loader-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Loading" id="loader-progress-track">
+          <div class="loader-progress-fill" id="loader-progress-fill"></div>
+        </div>
+        <div class="loader-progress-meta">
+          <span class="loader-text" id="loader-status">Initializing&hellip;</span>
+          <span class="loader-progress-pct" id="loader-progress-pct">0%</span>
+        </div>
+      </div>
+    </article>
+  </div>
+</div>
+
+<div id="app" class="is-loading">
+  <header class="app-header">
+    <div class="app-header-top">
+      <div class="app-header-top-inner">
+        <div class="app-page-titles">
+          <h1 class="app-page-title">3E IPEDS Insights</h1>
+          <p class="app-page-subtitle">Admissions &amp; Advancement</p>
+        </div>
+        <div class="app-header-util">
+          <button type="button" id="btn-export-report" class="btn-export" disabled title="Select an institution before exporting a report.">Export Report</button>
+          <div class="theme-toggle theme-toggle--surface" role="group" aria-label="Color theme">
+            <button type="button" class="theme-toggle-btn is-active" data-theme-set="light">Light</button>
+            <button type="button" class="theme-toggle-btn" data-theme-set="dark">Dark</button>
+          </div>
+          <div class="status-pill">
+            <span class="status-dot" id="status-dot" aria-hidden="true"></span>
+            <span class="status-pill-text" id="header-status">Loading</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="page-tabs-wrap">
+      <div class="page-tabs" role="tablist" aria-label="IPEDS sections">
+        <button type="button" class="page-tab is-active" role="tab" aria-selected="true" aria-controls="view-admissions" id="tab-admissions" data-page="admissions">Admissions</button>
+        <button type="button" class="page-tab" role="tab" aria-selected="false" aria-controls="view-advancement" id="tab-advancement" tabindex="-1" data-page="advancement">Advancement</button>
+        <button type="button" class="page-tab" role="tab" aria-selected="false" aria-controls="view-keymetrics" id="tab-keymetrics" tabindex="-1" data-page="keymetrics">Key metrics</button>
+        <button type="button" class="page-tab" role="tab" aria-selected="false" aria-controls="view-faq" id="tab-faq" tabindex="-1" data-page="faq">FAQ / Glossary</button>
+      </div>
+    </div>
+    <div class="filter-bar-wrap">
+      <section class="filter-bar" aria-label="Filters">
+        <div id="filter-fields"></div>
+      </section>
+      <div id="peer-context-banner" class="peer-context-banner hidden"></div>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <div id="data-banner" class="data-banner hidden"></div>
+    <div id="view-admissions" class="page-view" role="tabpanel" aria-labelledby="tab-admissions"></div>
+    <div id="view-advancement" class="page-view hidden" role="tabpanel" aria-labelledby="tab-advancement" aria-hidden="true"></div>
+    <div id="view-keymetrics" class="page-view hidden" role="tabpanel" aria-labelledby="tab-keymetrics" aria-hidden="true"></div>
+    <div id="view-faq" class="page-view hidden" role="tabpanel" aria-labelledby="tab-faq" aria-hidden="true"></div>
+
+    <footer id="footer">
+      <div class="footer-main">
+        <a class="footer-brand" href="https://www.3enrollment.com" target="_blank" rel="noopener">
+          <img src="3E-logo.png" alt="3 Enrollment Marketing" class="footer-logo-img">
+        </a>
+      </div>
+      <div class="footer-divider" aria-hidden="true"></div>
+      <div class="footer-bottom">
+        <span class="footer-copy">&copy; 2026 3 Enrollment Marketing. All Rights Reserved.</span>
+        <span id="footer-build" class="footer-build" aria-label="Build identifier"></span>
+        <a class="footer-email" href="mailto:wegotthis@3enrollment.com">wegotthis@3enrollment.com</a>
+      </div>
+    </footer>
+  </main>
+</div>
+
+<div id="section-overview-overlay" class="detail-overlay section-overview-overlay" hidden></div>
+<div id="section-overview-modal" class="detail-modal section-overview-modal" role="dialog" aria-modal="true" aria-labelledby="section-overview-title" hidden>
+  <div class="detail-head section-overview-head">
+    <div>
+      <h2 id="section-overview-title" class="detail-title"></h2>
+      <p id="section-overview-lead" class="detail-subtitle"></p>
+    </div>
+    <div class="detail-actions">
+      <button type="button" id="section-overview-close" class="btn-text">Close</button>
+    </div>
+  </div>
+  <p id="section-overview-note" class="section-overview-note"></p>
+  <div class="section-overview-chart-wrap" id="section-overview-chart-wrap">
+    <canvas id="section-overview-canvas"></canvas>
+  </div>
+</div>
+
+<div id="detail-overlay" class="detail-overlay" hidden></div>
+<div id="detail-modal" class="detail-modal" role="dialog" aria-modal="true" aria-labelledby="detail-title" hidden>
+  <div class="detail-head">
+    <div>
+      <h2 id="detail-title" class="detail-title"></h2>
+      <p id="detail-subtitle" class="detail-subtitle"></p>
+    </div>
+    <div class="detail-actions">
+      <button type="button" id="detail-export-csv" class="btn-text" disabled>Download CSV</button>
+      <button type="button" id="detail-export" class="btn-text" disabled>Download report</button>
+      <button type="button" id="detail-close" class="btn-text">Close</button>
+    </div>
+  </div>
+  <div id="detail-explore" class="detail-explore hidden" aria-label="Comparison explorer"></div>
+  <div class="detail-chart-wrap" id="detail-chart-wrap"><canvas id="detail-canvas"></canvas></div>
+  <div class="detail-table" id="detail-table"></div>
+</div>
+
+<div id="report-overlay" class="report-overlay" hidden>
+  <div class="report-toolbar">
+    <button type="button" id="report-print" class="btn-export">Print or save as PDF</button>
+    <button type="button" id="report-download" class="btn-text">Download HTML</button>
+    <button type="button" id="report-close" class="btn-text">Close</button>
+  </div>
+  <div id="report-sheet" class="report-sheet"></div>
+</div>
+
+<script defer src="vendor/chart.umd.min.js?v=0.4.67"></script>
+<script defer src="https://unpkg.com/ryuu.js@4.6.0/dist/domo.js" integrity="sha384-YYsd9wQ+wDlUWhvpfGdptxmNYIqBC+52oJtWgPKJadbs3sSFTY/+ZotPbEHTTRWz" crossorigin="anonymous"></script>
+<script defer src="app.js?v=0.4.67"></script>
+</body>
+</html>

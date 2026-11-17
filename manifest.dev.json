@@ -1,0 +1,22 @@
+{
+  "name": "DEV_3E IPEDS Insights",
+  "version": "0.4.67",
+  "datasetsMapping": [
+    {
+      "dataSetId": "5bde5389-19ca-4452-acf6-b3241f75453d",
+      "alias": "ipeds",
+      "fields": []
+    },
+    {
+      "dataSetId": "1de6f5ea-6fdb-4e18-a3cc-e64c487445ed",
+      "alias": "migration",
+      "fields": []
+    }
+  ],
+  "size": {
+    "width": 4,
+    "height": 4
+  },
+  "fileName": "manifest.dev.json",
+  "id": "094f2030-ec97-4586-a31e-2a5c848b4074"
+}
