@@ -6,7 +6,7 @@ Static snapshot of the **IPEDS Insights** Domo custom design from `3enrollment/e
 
 After push: **https://lancecmaben.github.io/ipeds-insights-demo/**
 
-This app requires the Domo SDK and mapped datasets at runtime. GitHub Pages hosts the **assets** for portfolio preview; full behavior is validated on Domo Dev/Prod.
+**Demo mode:** `pages-demo-bootstrap.js` + synthetic tables power the dashboard on GitHub Pages without Domo. Domo Dev/Prod builds are unchanged in the team monorepo.
 
 ## Publish flow
 

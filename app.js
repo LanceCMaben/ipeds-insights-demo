@@ -47,7 +47,7 @@ var KNOWN_COLUMNS = [
 ];
 var IPEDS_PROBE_COLUMNS = KNOWN_COLUMNS.join(', ');
 var PARTITION_COLUMNS = ['MYINSTNAME', 'PARTITION', 'CLIENT', 'PARTNER'];
-var DEFAULT_INSTITUTION = 'HighPoint University';
+var DEFAULT_INSTITUTION = typeof window !== 'undefined' && window.__PAGES_DEMO__ ? 'Riverside State University' : 'HighPoint University';
 var PEER_CMP_SUBTITLE = 'Peer average';
 var PEER_PICK_FILTERS_MSG = 'Choose comparison filters on the right (conference, state, control, etc.), then Apply.';
 var ORIGIN_PICK_STATE_MSG = 'Choose a state.';
@@ -8491,7 +8491,10 @@ function bootCore() {
     finishLoading();
     return;
   }
-  setLoaderProgress(12, 'Connecting to Domo…');
+  if (window.__PAGES_DEMO__) {
+    setBanner('Portfolio demo with synthetic IPEDS-style data (no Domo account required).', 'info');
+  }
+  setLoaderProgress(12, window.__PAGES_DEMO__ ? 'Loading demo data…' : 'Connecting to Domo…');
   Promise.all([
     probeAlias(CONFIG.ipedsAlias).then(function (rows) {
       state.connected.ipeds = true;
