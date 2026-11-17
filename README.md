@@ -1,5 +1,21 @@
 # 3E IPEDS Insights
 
+## View the dashboard
+
+GitHub shows **code** on the tabs below; the app itself runs on **GitHub Pages**.
+
+| | |
+|---|---|
+| **Live demo (synthetic data)** | **[https://lancecmaben.github.io/ipeds-insights-demo/](https://lancecmaben.github.io/ipeds-insights-demo/)** |
+| From this repo | **Code** → right sidebar **About** → **Website** (same URL) |
+
+[![Open live demo](thumbnail.png)](https://lancecmaben.github.io/ipeds-insights-demo/)
+
+---
+
+<details>
+<summary><strong>Domo team notes (3enrollment source)</strong></summary>
+
 Client-facing Domo card for **IPEDS Insights — Admissions & Advancement**.
 
 **Repo home:** [`eee_client_insights`](https://github.com/3enrollment/eee_client_insights) → folder `IPEDS_Insights/`  
@@ -59,3 +75,5 @@ node -e "const {Login}=require('C:/Users/LanceMaben/AppData/Local/npm-cache/_npx
 Hard-refresh ClearSquare (Ctrl+Shift+R) after pin.
 
 **App notes:** [DOCUMENTATION.md](./DOCUMENTATION.md)
+
+</details>
